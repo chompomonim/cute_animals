@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 import {Grid, Row, Col} from 'react-bootstrap';
 import {PageHeader, Nav, NavItem} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 import {Item} from './components/items.jsx';
 
@@ -15,7 +16,9 @@ class App extends React.Component {
         this.state = {
             gifs: [],
             limit: 12,
-            query: 'Puppies+Kittens'
+            query: 'Puppies+Kittens',
+            likes: 0,
+            animate: false
         };
     }
 
@@ -33,32 +36,47 @@ class App extends React.Component {
             this.setState({
                 gifs: result.data
             });
-            console.log('Data loaded')
         });
     }
 
     handleSelect (selectedKey) {
         event.preventDefault();
-        console.log(selectedKey);
         this.setState({
             query: selectedKey
         });
         this.loadData(selectedKey)
     }
 
+    likeMe () {
+        this.setState({
+            likes: this.state.likes + 1
+        })
+    }
+
+    animateItems () {
+        this.setState({
+            animate: !this.state.animate
+        })
+    }
+
     render () {
-        console.log(this.state.query, this.state.limit)
         return (
             <Grid>
-                <Row style={{'margin-bottom': '1em'}}>
-                    <PageHeader>Kittens and Puppies</PageHeader>
+                <Row style={{'marginBottom': '1em'}}>
+                    <PageHeader>Kittens and Puppies
+                        <small> Likes: {this.state.likes} </small>
+                    </PageHeader>
                     <Nav bsStyle="tabs"
                          activeKey={this.state.query}
-                         onSelect={this.handleSelect.bind(this)}
-                         justified >
+                         onSelect={this.handleSelect.bind(this)} >
                         <NavItem eventKey={'Kittens'} title="Kittens">Kittens</NavItem>
                         <NavItem eventKey={'Puppies'} >Puppies</NavItem>
                         <NavItem eventKey={'Puppies+Kittens'} >Together</NavItem>
+                        <div className="pull-right">
+                            <Input type="checkbox"
+                                   label="Animate"
+                                   onClick={this.animateItems.bind(this)} />
+                        </div>
                     </Nav>
                 </Row>
                 <Row className="show-results">
@@ -68,7 +86,10 @@ class App extends React.Component {
                               name={item.slug}
                               source={item.source_tld}
                               source_url={item.source_post_url}
-                              img_url={item.images.fixed_height_small_still.url} />
+                              img_url_still={item.images.fixed_height_small_still.url}
+                              img_url={item.images.fixed_height_small.url}
+                              animate={this.state.animate}
+                              clickButton={this.likeMe.bind(this)} />
                     )}
                 </Row>
             </Grid>
