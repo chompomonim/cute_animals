@@ -18,7 +18,8 @@ class App extends React.Component {
             limit: 12,
             query: 'Puppies+Kittens',
             likes: 0,
-            animate: false
+            animate: false,
+            showModal: undefined
         };
     }
 
@@ -59,6 +60,18 @@ class App extends React.Component {
         })
     }
 
+    onHideClick () {
+        this.setState({
+            showModal: undefined
+        })
+    }
+
+    onShowClick (id) {
+        this.setState({
+            showModal: id
+        })
+    }
+
     render () {
         return (
             <Grid>
@@ -86,9 +99,11 @@ class App extends React.Component {
                               name={item.slug}
                               source={item.source_tld}
                               source_url={item.source_post_url}
-                              img_url_still={item.images.fixed_height_small_still.url}
-                              img_url={item.images.fixed_height_small.url}
+                              images={item.images}
                               animate={this.state.animate}
+                              show={this.state.showModal === item.id}
+                              onHide={this.onHideClick.bind(this)}
+                              clickShowButton={this.onShowClick.bind(this, item.id)}
                               clickButton={this.likeMe.bind(this)} />
                     )}
                 </Row>

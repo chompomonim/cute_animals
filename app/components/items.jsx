@@ -1,18 +1,21 @@
 import React from 'react';
 import { Col, Thumbnail } from 'react-bootstrap';
 import {ButtonGroup, Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 
 
 export const Item = ({id, name,
-                      img_url, img_url_still,
+                      images,
                       source_url, source,
                       clickButton,
-                      animate=false}) => {
-    let url = img_url_still;
-    if (animate)
-        url = img_url;
+                      clickShowButton, onHide,
+                      animate=false,
+                      show=false }) => {
 
-    return <Col xs={6} md={3}>
+    let url = images.fixed_height_small_still.url;
+    if (animate) url = images.fixed_height_small.url;
+
+    return <Col xs={12} sm={6} md={4} lg={3}>
         <Thumbnail src={url} alt={name}>
             <p>
               <b>Source: </b>
@@ -20,9 +23,25 @@ export const Item = ({id, name,
             </p>
             <ButtonGroup>
                 <Button bsStyle="success" onClick={clickButton}>Like</Button>
-                <Button>Show bigger</Button>
+                <Button onClick={clickShowButton}>Show bigger</Button>
                 <Button>Animate</Button>
             </ButtonGroup>
         </Thumbnail>
+
+        <ItemModal show={show} onHide={onHide}
+                   img_url={images.original.url} />
     </Col>
 }
+
+
+export const ItemModal = ({img_url, show, onHide}) =>
+    <Modal bsSize="large"
+           show={show}
+           onHide={onHide}
+           aria-labelledby="contained-modal-title-lg">
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body>
+            <div className="text-center"><img src={img_url} /></div>
+        </Modal.Body>
+    </Modal>
