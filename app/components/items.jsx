@@ -8,9 +8,11 @@ export const Item = ({id, name,
                       images,
                       source_url, source,
                       clickButton,
-                      clickShowButton, onHide,
+                      clickShowButton,
+                      onHide,
                       animate=false,
-                      show=false }) => {
+                      show=false,
+                      liked=false }) => {
 
     let url = images.fixed_height_small_still.url;
     if (animate) url = images.fixed_height_small.url;
@@ -22,8 +24,10 @@ export const Item = ({id, name,
               <a href={source_url}>{source}</a>
             </p>
             <ButtonGroup>
-                <Button bsStyle="success" onClick={clickButton}>Like</Button>
-                <Button onClick={clickShowButton}>Show bigger</Button>
+                <Button bsStyle="success" onClick={clickButton} disabled={liked}>
+                    {(liked) ? 'Liked' : 'Like'}
+                </Button>
+                <Button onClick={clickShowButton}>Show</Button>
                 <Button>Animate</Button>
             </ButtonGroup>
         </Thumbnail>
@@ -32,7 +36,6 @@ export const Item = ({id, name,
                    img_url={images.original.url} />
     </Col>
 }
-
 
 export const ItemModal = ({img_url, show, onHide}) =>
     <Modal bsSize="large"

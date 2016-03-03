@@ -18,6 +18,7 @@ class App extends React.Component {
             limit: 12,
             query: 'Puppies+Kittens',
             likes: 0,
+            liked: [],
             animate: false,
             showModal: undefined
         };
@@ -48,10 +49,13 @@ class App extends React.Component {
         this.loadData(selectedKey)
     }
 
-    likeMe () {
-        this.setState({
-            likes: this.state.likes + 1
-        })
+    likeMe (item_id) {
+        if (this.state.liked.indexOf(item_id) === -1) {
+            this.setState({
+                likes: this.state.likes + 1,
+                liked: [...this.state.liked, item_id]
+            })
+        }
     }
 
     animateItems () {
@@ -66,9 +70,9 @@ class App extends React.Component {
         })
     }
 
-    onShowClick (id) {
+    onShowClick (item_id) {
         this.setState({
-            showModal: id
+            showModal: item_id
         })
     }
 
@@ -102,9 +106,10 @@ class App extends React.Component {
                               images={item.images}
                               animate={this.state.animate}
                               show={this.state.showModal === item.id}
+                              liked={this.state.liked.indexOf(item.id) > -1}
                               onHide={this.onHideClick.bind(this)}
                               clickShowButton={this.onShowClick.bind(this, item.id)}
-                              clickButton={this.likeMe.bind(this)} />
+                              clickButton={this.likeMe.bind(this, item.id)} />
                     )}
                 </Row>
             </Grid>
