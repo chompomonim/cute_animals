@@ -1,0 +1,14 @@
+{
+  "name": "cute_animals",
+  "version": "0.1.0",
+  "description": "Simple React app which will help to navigate among cute animals using GiphyAPI",
+  "main": "app/main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jaro Satkevic",
+  "license": "GPL3.0"
+}
