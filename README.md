@@ -27,7 +27,7 @@ Got into browser and open: http://localhost:8080
 
 To run test simply use:
 
-    $
+    $ npm run test
 
 
 ## Simple deploying
