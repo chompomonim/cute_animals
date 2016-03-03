@@ -4,13 +4,13 @@
 
 Use the Giphy API to create a single-page Javascript application; 
 https://github.com/giphy/GiphyAPI
- 
+
 The application should include the following features:
- 
+
 * A control to toggle between Kittens or Puppies search results
 * Paged results with 15 GIFs per pageA
 * Clicking on a result opens the full animation in a modal.
- 
+
 Use any framework or libraries you think are appropriate. The code should be performant and tested, ready for production. We would be very interested to see any additional features you might like to include.
 
 
