@@ -40,7 +40,7 @@ describe('Like item', function() {
 
 describe('Animate item', function() {
     before(function() {
-        store.subscribe(() => {})
+        this.unsubscribe = store.subscribe(() => {})
     })
 
     it('should set animate to true', function() {
