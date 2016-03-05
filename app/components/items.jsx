@@ -1,11 +1,11 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 import { Col, Thumbnail } from 'react-bootstrap';
 import { ButtonGroup, Button } from 'react-bootstrap';
-import { Modal } from 'react-bootstrap';
 
 import store from '../store';
-import { likeItem, animateItem, hideModal, showModal } from '../store/actions'
+import { likeItem, animateItem, hideModal, showModal } from '../store/actions';
+import ItemModal from './item_modal.jsx';
 
 
 const Item = ({id, name, images, source_url, source }) => {
@@ -49,25 +49,5 @@ const Item = ({id, name, images, source_url, source }) => {
                    img_url={images.original.url} />
     </Col>
 }
-
-
-const ItemModal = ({img_url, show, onHide}) =>
-    <Modal bsSize="large"
-           show={show}
-           onHide={onHide}
-           aria-labelledby="contained-modal-title-lg">
-        <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body>
-            <div className="text-center"><img src={img_url} /></div>
-        </Modal.Body>
-    </Modal>
-
-ItemModal.propTypes = {
-  img_url: PropTypes.string.isRequired,
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired
-}
-
 
 export default Item
