@@ -1,21 +1,28 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+
 import { Col, Thumbnail } from 'react-bootstrap';
-import {ButtonGroup, Button} from 'react-bootstrap';
-import {Modal} from 'react-bootstrap';
+import { ButtonGroup, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
+
+import store from '../store';
+import { likeItem, hideModal, showModal } from '../store/actions'
 
 
-export const Item = ({id, name,
-                      images,
-                      source_url, source,
-                      clickButton,
-                      clickShowButton,
-                      onHide,
-                      animate=false,
-                      show=false,
-                      liked=false }) => {
+const Item = ({name,
+              id,
+              images,
+              source_url, source,
+              animate=false }) => {
 
-    let url = images.fixed_height_small_still.url;
-    if (animate) url = images.fixed_height_small.url;
+    let state = store.getState()
+
+    let liked = false
+    if (state.items[id]) {
+      liked = state.items[id].liked
+    }
+
+    let url = images.fixed_height_small_still.url
+    if (animate) url = images.fixed_height_small.url
 
     return <Col xs={12} sm={6} md={4} lg={3}>
         <Thumbnail src={url} alt={name}>
@@ -24,20 +31,22 @@ export const Item = ({id, name,
               <a href={source_url}>{source}</a>
             </p>
             <ButtonGroup>
-                <Button bsStyle="success" onClick={clickButton} disabled={liked}>
+                <Button bsStyle="success" onClick={() => store.dispatch(likeItem(id))} disabled={liked}>
                     {(liked) ? 'Liked' : 'Like'}
                 </Button>
-                <Button onClick={clickShowButton}>Show</Button>
+                <Button onClick={() => store.dispatch(showModal(id))}>Show</Button>
                 <Button>Animate</Button>
             </ButtonGroup>
         </Thumbnail>
 
-        <ItemModal show={show} onHide={onHide}
+        <ItemModal show={state.showModal === id}
+                   onHide={() => store.dispatch(hideModal())}
                    img_url={images.original.url} />
     </Col>
 }
 
-export const ItemModal = ({img_url, show, onHide}) =>
+
+const ItemModal = ({img_url, show, onHide}) =>
     <Modal bsSize="large"
            show={show}
            onHide={onHide}
@@ -48,3 +57,12 @@ export const ItemModal = ({img_url, show, onHide}) =>
             <div className="text-center"><img src={img_url} /></div>
         </Modal.Body>
     </Modal>
+
+ItemModal.propTypes = {
+  img_url: PropTypes.string.isRequired,
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired
+}
+
+
+export default Item
