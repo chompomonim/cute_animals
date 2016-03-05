@@ -1,53 +1,45 @@
-import React from 'react';
+import React from 'react'
+import store from '../store'
+import ItemBox from './item.jsx'
+import ItemModal from './item_modal.jsx'
 
-import { Col, Thumbnail } from 'react-bootstrap';
-import { ButtonGroup, Button } from 'react-bootstrap';
-
-import store from '../store';
-import { likeItem, animateItem, hideModal, showModal } from '../store/actions';
-import ItemModal from './item_modal.jsx';
+import { hideModal } from '../store/actions';
 
 
-const Item = ({id, name, images, source_url, source }) => {
+class Items extends React.Component {
 
-    let state = store.getState()
-
-    let liked = false
-    let animate = false
-    if (state.items[id]) {
-      liked = state.items[id].liked
-      animate = state.items[id].animate
+    componentDidMount () {
+        this.unsubscribe = store.subscribe(() =>
+            this.forceUpdate()
+        )
     }
 
-    if (state.animateAll)
-        animate = true
+    componentWillUnmount () {
+        this.unsubscribe()
+    }
 
-    let url = images.fixed_height_small_still.url
-    if (animate) url = images.fixed_height_small.url
+    render () {
+        const state = store.getState()
 
-    return <Col xs={12} sm={6} md={4} lg={3}>
-        <Thumbnail src={url} alt={name}>
-            <p>
-              <b>Source: </b>
-              <a href={source_url}>{source}</a>
-            </p>
-            <ButtonGroup>
-                <Button bsStyle="success"
-                        onClick={() => store.dispatch(likeItem(id))}
-                        disabled={liked}>
-                    {(liked) ? 'Liked' : 'Like'}
-                </Button>
-                <Button onClick={() => store.dispatch(showModal(id))}>Show</Button>
-                <Button onClick={() => store.dispatch(animateItem(id))}>
-                    {(animate) ? 'Stop animation' : 'Animate'}
-                </Button>
-            </ButtonGroup>
-        </Thumbnail>
+        return (
+            <div className="items">
+                {state.gifs.map((item) =>
+                    <ItemBox key={item.id}
+                             item={state.items[item.id]}
+                             id={item.id}
+                             name={item.slug}
+                             source={item.source_tld}
+                             source_url={item.source_post_url}
+                             images={item.images}
+                             animateAll={state.animateAll} />
+                )}
 
-        <ItemModal show={state.showModal === id}
-                   onHide={() => store.dispatch(hideModal())}
-                   img_url={images.original.url} />
-    </Col>
+                <ItemModal show={Boolean(state.showModal)}
+                           onHide={() => store.dispatch(hideModal())}
+                           img_url={String(state.showModal)} />
+        </div>
+        )
+    }
 }
 
-export default Item
+export default Items

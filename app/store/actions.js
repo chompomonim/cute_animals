@@ -27,10 +27,11 @@ export function hideModal() {
     }
 }
 
-export function showModal(item_id) {
+export function showModal(img_url) {
     return {
         type: 'SHOW_MODAL',
-        id: item_id
+        img_url: img_url
+
     }
 }
 

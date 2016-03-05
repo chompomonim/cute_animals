@@ -72,7 +72,7 @@ function cuteApp(state = initialState, action) {
             })
         case 'SHOW_MODAL':
             return Object.assign({}, state, {
-                showModal: action.id
+                showModal: action.img_url
             })
         case 'SET_QUERY':
             return Object.assign({}, state, {
