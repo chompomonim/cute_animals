@@ -1,50 +1,45 @@
-import React from 'react';
-import { Col, Thumbnail } from 'react-bootstrap';
-import {ButtonGroup, Button} from 'react-bootstrap';
-import {Modal} from 'react-bootstrap';
+import React from 'react'
+import store from '../store'
+import ItemBox from './item.jsx'
+import ItemModal from './item_modal.jsx'
+
+import { hideModal } from '../store/actions';
 
 
-export const Item = ({id, name,
-                      images,
-                      source_url, source,
-                      clickButton,
-                      clickShowButton,
-                      onHide,
-                      animate=false,
-                      show=false,
-                      liked=false }) => {
+class Items extends React.Component {
 
-    let url = images.fixed_height_small_still.url;
-    if (animate) url = images.fixed_height_small.url;
+    componentDidMount () {
+        this.unsubscribe = store.subscribe(() =>
+            this.forceUpdate()
+        )
+    }
 
-    return <Col xs={12} sm={6} md={4} lg={3}>
-        <Thumbnail src={url} alt={name}>
-            <p>
-              <b>Source: </b>
-              <a href={source_url}>{source}</a>
-            </p>
-            <ButtonGroup>
-                <Button bsStyle="success" onClick={clickButton} disabled={liked}>
-                    {(liked) ? 'Liked' : 'Like'}
-                </Button>
-                <Button onClick={clickShowButton}>Show</Button>
-                <Button>Animate</Button>
-            </ButtonGroup>
-        </Thumbnail>
+    componentWillUnmount () {
+        this.unsubscribe()
+    }
 
-        <ItemModal show={show} onHide={onHide}
-                   img_url={images.original.url} />
-    </Col>
+    render () {
+        const state = store.getState()
+
+        return (
+            <div className="items">
+                {state.gifs.map((item) =>
+                    <ItemBox key={item.id}
+                             item={state.items[item.id]}
+                             id={item.id}
+                             name={item.slug}
+                             source={item.source_tld}
+                             source_url={item.source_post_url}
+                             images={item.images}
+                             animateAll={state.animateAll} />
+                )}
+
+                <ItemModal show={Boolean(state.showModal)}
+                           onHide={() => store.dispatch(hideModal())}
+                           img_url={String(state.showModal)} />
+        </div>
+        )
+    }
 }
 
-export const ItemModal = ({img_url, show, onHide}) =>
-    <Modal bsSize="large"
-           show={show}
-           onHide={onHide}
-           aria-labelledby="contained-modal-title-lg">
-        <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body>
-            <div className="text-center"><img src={img_url} /></div>
-        </Modal.Body>
-    </Modal>
+export default Items
