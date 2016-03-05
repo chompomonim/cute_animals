@@ -8,19 +8,18 @@ const initialState = {
     animateAll: false,
 }
 
-
 function generateItem(item_id, state) {
-    let liked = false
-    let animate = false
-    let item = state[item_id]
-    if (item) {
-        liked = item.liked
-        animate = item.animate
+    const initialItem = {
+        liked: false,
+        animate: false,
+        images: {}
     }
+    let item = (state[item_id]) ? state[item_id] : initialItem
 
     return {
-        liked: liked,
-        animate: animate
+        liked: item.liked,
+        animate: item.animate,
+        images: item.images
     }
 }
 
@@ -33,7 +32,11 @@ function items(action, state={}, likes=0) {
 
             return {
                 liked_items: Object.assign({}, state, {
-                    [action.id]: { liked: !item.liked, animate: item.animate }
+                    [action.id]: {
+                        liked: !item.liked,
+                        animate: item.animate,
+                        images: action.images
+                    }
                 }),
                 likes: likes + inc
             }
@@ -42,7 +45,8 @@ function items(action, state={}, likes=0) {
             return Object.assign({}, state, {
                 [action.id]: {
                     liked: item.liked,
-                    animate: !item.animate
+                    animate: !item.animate,
+                    images: item.images
                 }
             })
         default:
@@ -81,6 +85,17 @@ function cuteApp(state = initialState, action) {
         case 'ANIMATE_ALL':
             return Object.assign({}, state, {
                 animateAll: !state.animateAll
+            })
+        case 'SHOW_LIKED_ITEMS':
+            let gifs = Object.keys(action.data).map((item_id) => {
+                return {
+                    id: item_id,
+                    images: action.data[item_id].images
+                }
+            })
+            return Object.assign({}, state, {
+                query: 'Liked',
+                gifs: gifs
             })
         default:
             return state

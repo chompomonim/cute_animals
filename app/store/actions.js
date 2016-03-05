@@ -1,8 +1,9 @@
 // Actions Creators
-export function likeItem(item_id) {
+export function likeItem(item_id, images) {
     return {
         type: 'LIKE_ITEM',
-        id: item_id
+        id: item_id,
+        images: images
     }
 }
 
@@ -44,4 +45,11 @@ export function setQuery(query) {
 
 export function animateAll() {
     return { type: 'ANIMATE_ALL' }
+}
+
+export function showLikedItems(items) {
+    return {
+        type: 'SHOW_LIKED_ITEMS',
+        data: items
+    }
 }

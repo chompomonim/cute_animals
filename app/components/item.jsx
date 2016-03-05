@@ -54,7 +54,7 @@ const ItemBox = (props) => {
                   img_url={img_url}
                   liked={liked}
                   animate={animate}
-                  onLikeClick={() => store.dispatch(likeItem(props.id))}
+                  onLikeClick={() => store.dispatch(likeItem(props.id, props.images))}
                   onShowClick={() => store.dispatch(showModal(original_img))}
                   onAnimateClick={() => store.dispatch(animateItem(props.id))} />
         </Col>

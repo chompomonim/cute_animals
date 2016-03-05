@@ -3,7 +3,7 @@ import React from 'react';
 import { Nav, NavItem, Input } from 'react-bootstrap';
 
 import store from '../store';
-import { updateGifsList, setQuery, animateAll } from '../store/actions'
+import { updateGifsList, setQuery, animateAll, showLikedItems } from '../store/actions'
 
 
 class Navigation extends React.Component {
@@ -14,9 +14,16 @@ class Navigation extends React.Component {
             api_url: React.PropTypes.string.isRequired
         };
     }
-    constructor(props) {
-        super(props)
+
+    componentDidMount () {
         this.loadData(store.getState().query);
+        this.unsubscribe = store.subscribe(() =>
+            this.forceUpdate()
+        )
+    }
+
+    componentWillUnmount () {
+        this.unsubscribe()
     }
 
     loadData (query) {
@@ -36,20 +43,26 @@ class Navigation extends React.Component {
         this.loadData(selectedKey)
     }
 
-    componentWillUnmount () {
-        this.unsubscribe()
+    showLikedItems (event) {
+        event.preventDefault()
+        store.dispatch(showLikedItems(store.getState().items))
     }
 
     render() {
         let state = store.getState()
 
         return (
-            <Nav bsStyle="tabs"
-                 activeKey={state.query}
-                 onSelect={this.handleSelect.bind(this)} >
-                <NavItem eventKey={'Kittens'} title="Kittens">Kittens</NavItem>
-                <NavItem eventKey={'Puppies'} >Puppies</NavItem>
-                <NavItem eventKey={'Puppies+Kittens'} >Together</NavItem>
+            <Nav bsStyle="tabs" activeKey={state.query}>
+                <NavItem eventKey={'Puppies+Kittens'}
+                         onClick={this.handleSelect.bind(this, 'Puppies+Kittens')}>Together</NavItem>
+                <NavItem eventKey={'Kittens'}
+                         onClick={this.handleSelect.bind(this, 'Kittens')}>Kittens</NavItem>
+                <NavItem eventKey={'Puppies'}
+                         onClick={this.handleSelect.bind(this, 'Puppies')}>Puppies</NavItem>
+                <NavItem eventKey={'Liked'}
+                         onClick={this.showLikedItems.bind(this)}>
+                         <div className="text-danger">Liked items ({state.likes})</div>
+                </NavItem>
                 <div className="pull-right">
                     <Input type="checkbox"
                            label="Animate"
