@@ -8,32 +8,59 @@ const initialState = {
     animateAll: false,
 }
 
-function liked_items(items=[], likes=0, action) {
+
+function generateItem(item_id, state) {
+    let liked = false
+    let animate = false
+    let item = state[item_id]
+    if (item) {
+        liked = item.liked
+        animate = item.animate
+    }
+
+    return {
+        liked: liked,
+        animate: animate
+    }
+}
+
+function items(action, state={}, likes=0) {
+    let item
     switch (action.type) {
         case 'LIKE_ITEM':
-            let liked = true
-            if (items[action.id])
-                liked = !items[action.id].liked
-            let inc = (liked) ? 1 : -1
+            item = generateItem(action.id, state)
+            let inc = (!item.liked) ? 1 : -1
 
             return {
-                items: Object.assign({}, items, {
-                    [action.id]: { liked: liked }
+                liked_items: Object.assign({}, state, {
+                    [action.id]: { liked: !item.liked, animate: item.animate }
                 }),
                 likes: likes + inc
             }
+        case 'ANIMATE_ITEM':
+            item = generateItem(action.id, state)
+            return Object.assign({}, state, {
+                [action.id]: {
+                    liked: item.liked,
+                    animate: !item.animate
+                }
+            })
         default:
-            return {items, likes}
+            return state
     }
 }
 
 function cuteApp(state = initialState, action) {
     switch (action.type) {
         case 'LIKE_ITEM':
-            let {items, likes} = liked_items(state.items, state.likes, action)
+            let {liked_items, likes} = items(action, state.items, state.likes)
             return Object.assign({}, state, {
                 likes: likes,
-                items: items
+                items: liked_items
+            })
+        case 'ANIMATE_ITEM':
+            return Object.assign({}, state, {
+                items: items(action, state.items)
             })
         case 'LOAD_DATA':
             return Object.assign({}, state, {

@@ -5,21 +5,22 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 
 import store from '../store';
-import { likeItem, hideModal, showModal } from '../store/actions'
+import { likeItem, animateItem, hideModal, showModal } from '../store/actions'
 
 
-const Item = ({name,
-              id,
-              images,
-              source_url, source,
-              animate=false }) => {
+const Item = ({id, name, images, source_url, source }) => {
 
     let state = store.getState()
 
     let liked = false
+    let animate = false
     if (state.items[id]) {
       liked = state.items[id].liked
+      animate = state.items[id].animate
     }
+
+    if (state.animateAll)
+        animate = true
 
     let url = images.fixed_height_small_still.url
     if (animate) url = images.fixed_height_small.url
@@ -31,11 +32,15 @@ const Item = ({name,
               <a href={source_url}>{source}</a>
             </p>
             <ButtonGroup>
-                <Button bsStyle="success" onClick={() => store.dispatch(likeItem(id))} disabled={liked}>
+                <Button bsStyle="success"
+                        onClick={() => store.dispatch(likeItem(id))}
+                        disabled={liked}>
                     {(liked) ? 'Liked' : 'Like'}
                 </Button>
                 <Button onClick={() => store.dispatch(showModal(id))}>Show</Button>
-                <Button>Animate</Button>
+                <Button onClick={() => store.dispatch(animateItem(id))}>
+                    {(animate) ? 'Stop animation' : 'Animate'}
+                </Button>
             </ButtonGroup>
         </Thumbnail>
 

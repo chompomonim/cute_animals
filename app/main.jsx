@@ -61,8 +61,7 @@ class App extends React.Component {
                               name={item.slug}
                               source={item.source_tld}
                               source_url={item.source_post_url}
-                              images={item.images}
-                              animate={state.animateAll} />
+                              images={item.images} />
                     )}
                 </Row>
             </Grid>

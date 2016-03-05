@@ -6,6 +6,13 @@ export function likeItem(item_id) {
     }
 }
 
+export function animateItem(item_id) {
+    return {
+        type: 'ANIMATE_ITEM',
+        id: item_id
+    }
+}
+
 export function updateGifsList(data) {
     return {
         type: "LOAD_DATA",
