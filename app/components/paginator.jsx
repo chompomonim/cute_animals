@@ -2,7 +2,7 @@ import $ from 'jquery';
 import React from 'react';
 import {Pagination} from 'react-bootstrap';
 import store from '../store';
-import { updateGifsList } from '../store/actions'
+import { updateGifsList, updatePagination } from '../store/actions'
 
 
 class Paginator extends React.Component {
@@ -31,12 +31,7 @@ class Paginator extends React.Component {
                 store.dispatch(updateGifsList(result.data, result.pagination))
             });
         } else {
-            let pagination = {
-                total_count: state.likes,
-                count: state.likes % limit,
-                offset: offset
-            }
-            store.dispatch({type: 'UPDATE_PAGINATION', pagination: pagination})
+            store.dispatch(updatePagination(page.eventKey))
         }
     }
 

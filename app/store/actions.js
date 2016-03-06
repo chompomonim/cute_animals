@@ -54,3 +54,10 @@ export function showLikedItems(items) {
         data: items
     }
 }
+
+export function updatePagination(page) {
+    return {
+        type: 'UPDATE_PAGINATION',
+        page: page
+    }
+}

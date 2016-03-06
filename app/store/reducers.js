@@ -29,8 +29,21 @@ function generateItem(item_id, state) {
 }
 
 function loadLikedItems(state = [], data, offset) {
-    let gifs = Object.keys(data)
-    return gifs.slice(offset, offset + state.limit).map((item_id) => {
+    function clean(array) {
+        let index = array.indexOf(undefined)
+        while (index !== -1) {
+            array.splice(index, 1)
+            index = array.indexOf(undefined)
+        }
+        return array
+    }
+
+    let liked_items = clean(Object.keys(data).map((item_id) => {
+        if (data[item_id].liked)
+            return item_id
+    }))
+
+    return liked_items.slice(offset, offset + state.limit).map((item_id) => {
         return {
             id: item_id,
             images: data[item_id].images
@@ -69,14 +82,36 @@ function items(action, state={}, likes=0) {
     }
 }
 
+// Check if offset is proper, if not, set it into max value.
+function updatePaginator(pagination, total_count) {
+    let {count, offset} = pagination
+    let max_pages = Math.ceil(total_count / initialState.limit)
+    let current_page = Math.ceil(offset / initialState.limit) + 1
+    if (current_page > max_pages)
+        offset = (max_pages - 1) * initialState.limit
+    return {
+        total_count: total_count,
+        count: pagination.count,
+        offset: offset
+    }
+}
+
 function cuteApp(state = initialState, action) {
     switch (action.type) {
         case 'LIKE_ITEM':
             let {liked_items, likes} = items(action, state.items, state.likes)
-            return Object.assign({}, state, {
+            let inject = {
                 likes: likes,
-                items: liked_items
-            })
+                items: liked_items,
+            }
+            // If we're in Liked items view, we should after disliking item we should
+            // delete it from list by updating gifs array.
+            if (state.query === 'Liked') {
+                let pagination = updatePaginator(state.pagination, likes)
+                inject.gifs = loadLikedItems(state, liked_items, pagination.offset)
+                inject.pagination = pagination
+            }
+            return Object.assign({}, state, inject)
         case 'ANIMATE_ITEM':
             return Object.assign({}, state, {
                 items: items(action, state.items)
@@ -115,9 +150,14 @@ function cuteApp(state = initialState, action) {
                 }
             })
         case 'UPDATE_PAGINATION':
+            let pagination = {
+                total_count: state.likes,
+                count: state.likes % state.limit,
+                offset: state.limit * (action.page - 1)
+            }
             return Object.assign({}, state, {
-                pagination: action.pagination,
-                gifs: loadLikedItems(state, state.items, action.pagination.offset)
+                pagination: pagination,
+                gifs: loadLikedItems(state, state.items, pagination.offset)
             })
         default:
             return state

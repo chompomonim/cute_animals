@@ -5,7 +5,7 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 
 import store from '../store';
 import { likeItem, animateItem, showModal } from '../store/actions';
-
+import LikeButton from './like_button.jsx';
 
 const Item = ({name, source_url, source, img_url, liked, animate,
                onLikeClick, onShowClick, onAnimateClick }) =>
@@ -15,11 +15,7 @@ const Item = ({name, source_url, source, img_url, liked, animate,
               <a href={source_url}>{source}</a>
             </p>
             <ButtonGroup>
-                <Button bsStyle="success"
-                        onClick={onLikeClick}
-                        disabled={liked}>
-                    {(liked) ? 'Liked' : 'Like'}
-                </Button>
+                <LikeButton liked={liked} onLikeClick={onLikeClick} />
                 <Button onClick={onShowClick}>Show</Button>
                 <Button onClick={onAnimateClick}>
                     {(animate) ? 'Stop animation' : 'Animate'}

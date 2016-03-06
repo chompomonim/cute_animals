@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import { likeItem, animateItem, showLikedItems } from '../app/store/actions'
+import { likeItem, animateItem, showLikedItems, updatePagination } from '../app/store/actions'
 
 import { createStore } from 'redux';
 import cuteApp from '../app/store/reducers';
@@ -111,4 +111,39 @@ describe('Show liked items', function() {
         expect(store.getState().gifs.length).to.equal(3)
     })
 
+})
+
+describe('Test pagination', function() {
+    before(function() {
+        store = createStore(cuteApp)
+    })
+
+    it('offset should be 0 when less than 12 liked items', function() {
+        let items = ["1", "2", "3"]
+        for (let item of items) {
+            store.dispatch(likeItem(item, item_images))
+        }
+        store.dispatch(showLikedItems(store.getState().items))
+        expect(store.getState().pagination.total_count).to.equal(3)
+        expect(store.getState().pagination.offset).to.equal(0)
+    })
+
+    it('go to second page should change offset', function() {
+        let items = ["4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+        for (let item of items) {
+            store.dispatch(likeItem(item, item_images))
+        }
+        store.dispatch(updatePagination(2))         // Go to second page
+        expect(store.getState().pagination.offset).to.equal(12)
+    })
+
+    it('should show one item on second page', function() {
+        let items_count = store.getState().gifs.length
+        expect(items_count).to.equal(1)
+    })
+
+    it('should go to prev page when dislike last item on page', function() {
+        store.dispatch(likeItem("13"))             // Dislike item by liking it again.
+        expect(store.getState().pagination.offset).to.equal(0)
+    })
 })
