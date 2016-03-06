@@ -5,6 +5,7 @@ import {Grid, Row} from 'react-bootstrap';
 import {PageHeader} from 'react-bootstrap';
 import Items from './components/items.jsx';
 import Navigation from './components/navigation.jsx';
+import Paginator from './components/paginator.jsx';
 
 const App = (props) =>
     <Grid>
@@ -15,6 +16,10 @@ const App = (props) =>
         </Row>
         <Row className="show-results">
             <Items />
+        </Row>
+        <Row>
+            <Paginator api_key={props.api_key}
+                       api_url={props.api_url}/>
         </Row>
     </Grid>
 

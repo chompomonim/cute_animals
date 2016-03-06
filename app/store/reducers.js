@@ -6,6 +6,11 @@ const initialState = {
     items: {},
     showModal: undefined,
     animateAll: false,
+    pagination: {
+        total_count: 0,
+        count: 12,
+        offset: 0
+    }
 }
 
 function generateItem(item_id, state) {
@@ -21,6 +26,16 @@ function generateItem(item_id, state) {
         animate: item.animate,
         images: item.images
     }
+}
+
+function loadLikedItems(state = [], data, offset) {
+    let gifs = Object.keys(data)
+    return gifs.slice(offset, offset + state.limit).map((item_id) => {
+        return {
+            id: item_id,
+            images: data[item_id].images
+        }
+    })
 }
 
 function items(action, state={}, likes=0) {
@@ -68,7 +83,8 @@ function cuteApp(state = initialState, action) {
             })
         case 'LOAD_DATA':
             return Object.assign({}, state, {
-                gifs: action.data
+                gifs: action.data,
+                pagination: action.pagination
             })
         case 'HIDE_MODAL':
             return Object.assign({}, state, {
@@ -87,15 +103,21 @@ function cuteApp(state = initialState, action) {
                 animateAll: !state.animateAll
             })
         case 'SHOW_LIKED_ITEMS':
-            let gifs = Object.keys(action.data).map((item_id) => {
-                return {
-                    id: item_id,
-                    images: action.data[item_id].images
-                }
-            })
+            let total_count = state.likes
+            let gifs = loadLikedItems(state, action.data, 0)
             return Object.assign({}, state, {
                 query: 'Liked',
-                gifs: gifs
+                gifs: gifs,
+                pagination: {
+                    total_count: total_count,
+                    count: initialState.limit,
+                    offset: initialState.pagination.offset
+                }
+            })
+        case 'UPDATE_PAGINATION':
+            return Object.assign({}, state, {
+                pagination: action.pagination,
+                gifs: loadLikedItems(state, state.items, action.pagination.offset)
             })
         default:
             return state

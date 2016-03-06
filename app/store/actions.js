@@ -14,10 +14,11 @@ export function animateItem(item_id) {
     }
 }
 
-export function updateGifsList(data) {
+export function updateGifsList(data, pagination) {
     return {
         type: "LOAD_DATA",
-        data: data
+        data: data,
+        pagination: pagination
     }
 }
 

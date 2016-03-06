@@ -27,13 +27,14 @@ class Navigation extends React.Component {
     }
 
     loadData (query) {
-        let limit = store.getState().limit;
-        let api_key = this.props.api_key;
-        let url = `${this.props.api_url}/search?q=${query}&api_key=${api_key}&limit=${limit}`;
+        const state = store.getState()
+        let limit = state.limit
+        let offset = state.pagination.offset
+        let api_key = this.props.api_key
+        let url = `${this.props.api_url}/search?q=${query}&api_key=${api_key}&limit=${limit}&offset=${offset}`;
 
         $.get(url, (result) => {
-            store.dispatch(updateGifsList(result.data))
-            this.forceUpdate()
+            store.dispatch(updateGifsList(result.data, result.pagination))
         });
     }
 
