@@ -21,8 +21,16 @@ class Items extends React.Component {
     render () {
         const state = store.getState()
 
+        if (state.query === 'Liked' && state.likes === 0)
+            var maybeInfoMessage = (
+                <h2 className="text-warning text-center">
+                    There are no liked items :(
+                </h2>
+            )
+
         return (
             <div className="items">
+                {maybeInfoMessage}
                 {state.gifs.map((item) =>
                     <ItemBox key={item.id}
                              item={state.items[item.id]}
