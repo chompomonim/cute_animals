@@ -1,4 +1,4 @@
-# Cute animals example app
+# Cute animals - React + Redux example app
 
 ## Task description
 
